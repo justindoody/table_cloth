@@ -1,16 +1,20 @@
 module TableCloth
   module ActionViewExtension
     def simple_table_for(objects, options={}, &block)
-      view_context = self
-      table = if block_given?
-        TableCloth::Builder.build(objects, view_context, options) do |table|
-          yield table
-        end
-      else
-        TableCloth::Builder.build(objects, view_context, options)
-      end
+      options[:display_empty] = true if options[:display_empty].nil?
 
-      table.to_s
+      if objects.present? || options[:display_empty]
+        view_context = self
+        table = if block_given?
+          TableCloth::Builder.build(objects, view_context, options) do |table|
+            yield table
+          end
+        else
+          TableCloth::Builder.build(objects, view_context, options)
+        end
+
+        table.to_s
+      end
     end
   end
 end
